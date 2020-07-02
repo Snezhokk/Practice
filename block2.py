@@ -22,9 +22,8 @@ def au_death_cases():
                 if (row[3] == 'Australia'):
                     death_count += int(float(row[6]))  # string - float - int
             else:
-                # Если список отсортирован, как в этом случае
-                break
-    return death_count
+                break  # Если список отсортирован, как в этом случае
+    return death_count  # 0
 
 
 def confirmed_cases():
@@ -39,4 +38,4 @@ def confirmed_cases():
                 confirmed_count += int(float(row[5]))
             else:
                 break
-    return confirmed_count
+    return confirmed_count  # 50573
