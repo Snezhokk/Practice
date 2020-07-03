@@ -13,11 +13,13 @@ from datetime import datetime
 # Ссылка на DataSet BitCoin
 # https://www.kaggle.com/mehranmazhar/bitcoin-historical-data
 
+
 def bitcoin_date_filtered():
     # Получение DataFrame из файла
     dataframe = pd.read_csv('Bitcoin_Historical_Data_Daily_2010-07-18_2020-06-25.csv')
     # Фильтрация и возврат по дате 01.04.2020 - 30.04.2020
     filtered = dataframe.loc[(dataframe['Date'] >= '2020-04-01') & (dataframe['Date'] <= '2020-04-30')]
+    filtered = filtered.copy()
     # Переименование столбца Date > ObservationDate для сдерживания стандарта
     filtered.rename(columns={'Date': 'ObservationDate'}, inplace=True)
     # Цену в нормальный вид
@@ -25,7 +27,7 @@ def bitcoin_date_filtered():
     # Изменение формата даты из %Y-%m-%d в число дня в месяце
     filtered['ObservationDate'] = list(map(lambda date: datetime.strptime(date, '%Y-%m-%d').day,
                                            filtered['ObservationDate']))
-    return filtered
+    return filtered[['ObservationDate', 'Price']]
 
 
 def merge():
@@ -35,6 +37,10 @@ def merge():
     russia = csv_russia_april_summarized.merge(bitcoin, on='ObservationDate', how='right')
     return usa.merge(russia, how='outer')
 
+
 # Переменная с результатом для импорта
 RESULT = merge()
-print(RESULT)
+
+
+if __name__ == '__main__':
+    print(RESULT)
