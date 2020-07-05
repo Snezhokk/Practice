@@ -30,6 +30,7 @@ def graphs():
     mpl.plot(x, y,'r', label='Вылечившихся')
     mpl.legend()
     mpl.grid(which='major', color='k')
+    mpl.minorticks_on()
 #   Второй график
     mpl.subplot(2, 1, 2)
     mpl.title('Количество случаев выздоровления короновирусом по России (Russia)', fontsize=14)
@@ -38,6 +39,7 @@ def graphs():
     mpl.grid(which='major', color='k')
     mpl.plot(x, z, 'g', label='Подтвержденных случаев')
     mpl.legend()
+    mpl.minorticks_on()
     mpl.show()
 if __name__ == '__main__':
     graphs()
