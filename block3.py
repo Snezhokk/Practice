@@ -4,7 +4,6 @@ import matplotlib.pyplot as mpl
 #   построить график по дням с 01.02.2020 по 29.02.2020
 #   *количество подтвержденных случаев заражения короновирусом по всему миру
 #   *количество случаев выздоровления короновирусом по России (Russia)
-
 df = pds.read_csv("covid_19_data.csv")
 #
 df['ObservationDate'] = pds.to_datetime(df['ObservationDate'])
@@ -39,9 +38,8 @@ def graphs():
     mpl.grid(which='major', color = 'k')
     mpl.plot(x, z, 'g', label='Подтвержденных случаев')
     mpl.legend()
-
+#
     mpl.show()
-#df.plot()
-#mpl.show()
+    
 if __name__ == '__main__':
     graphs()
