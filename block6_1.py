@@ -2,6 +2,9 @@ import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 
+# Блок создал Воровченко Леонид Сергеевич
+
+
 response = requests.get('https://pogoda1.ru/los-andzheles/april-2020/')
 soup = bs(response.content, 'html.parser')
 dates = []

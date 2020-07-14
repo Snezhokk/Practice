@@ -40,3 +40,8 @@ def confirmed_cases():
             else:
                 break
     return confirmed_count  # 50573
+
+
+if __name__ == '__main__':
+    print(au_death_cases())
+    print(confirmed_cases())

@@ -34,3 +34,7 @@ def main():
     calculate_recovered_per_confirmed(dataset)
 
     print(dataset)
+
+
+if __name__ == '__main__':
+    main()
