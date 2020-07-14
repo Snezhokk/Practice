@@ -1,4 +1,5 @@
 
+
 # <блок Тюменева Владислава Дмитриевича>
 def block_5():
     import pandas
@@ -67,9 +68,6 @@ def block_5():
             df.loc[i, 'dynamic(Recovered/Confirmed %)/population'] = (df.loc[i, 'Recovered'] / df.loc[i, 'Confirmed']) * 100 / population - df.loc[i - 1, 'dynamic(Recovered/Confirmed %)/population']
             df.loc[i, 'dynamic(Deaths/Confirmed %)/population'] = (df.loc[i, 'Deaths'] / df.loc[
                 i, 'Confirmed']) * 100 / population - df.loc[i - 1, 'dynamic(Deaths/Confirmed %)/population']
-
-        # df["dynamic(Recovered/Confirmed %)/population"] = df.apply(lambda row: (row["Recovered"]/row["Confirmed"]) * 100 / population, axis=1)
-        # df["dynamic(Deaths/Confirmed %)/population"] = df.apply(lambda row: (row["Deaths"] / row["Confirmed"]) * 100 / population, axis=1)
 
         return df
 
