@@ -23,6 +23,7 @@ csv_usa_april = csv_usa.loc[
 russia_population = 146748590
 usa_population = 329210630
 
+
 def summarize_data_by_date(dataframe):
     summarized_dict = {
         'ObservationDate': [],
@@ -69,6 +70,7 @@ def summarize_data_by_date(dataframe):
             i, 'Confirmed']) * 100 / population - df.loc[i - 1, 'dynamic(Deaths/Confirmed %)/population']
 
     return df
+
 
 def get_ticks_by_series(series_1, series_2, tick_step=1):
     tick_1_min = series_1.min()
