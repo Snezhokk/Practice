@@ -1,100 +1,102 @@
 
 
 # <блок Тюменева Владислава Дмитриевича>
-def block_5():
-    import pandas
-    import matplotlib.pyplot as plt
+import pandas
+import matplotlib.pyplot as plt
 
-    import math
-    import datetime
+import math
+import datetime
 
-    csv = pandas.read_csv('covid_19_data.csv')
+csv = pandas.read_csv('covid_19_data.csv')
 
-    csv_russia = csv.loc[csv['Country/Region'] == 'Russia']
-    csv_usa = csv.loc[csv['Country/Region'] == 'US']
+csv_russia = csv.loc[csv['Country/Region'] == 'Russia']
+csv_usa = csv.loc[csv['Country/Region'] == 'US']
 
-    csv_russia_april = csv_russia.loc[
-        (csv_russia['ObservationDate'] >= '04/01/2020') & (csv_russia['ObservationDate'] <= '04/30/2020')
-    ]
+csv_russia_april = csv_russia.loc[
+    (csv_russia['ObservationDate'] >= '04/01/2020') & (csv_russia['ObservationDate'] <= '04/30/2020')
+]
 
-    csv_usa_april = csv_usa.loc[
-        (csv_usa['ObservationDate'] >= '04/01/2020') & (csv_usa['ObservationDate'] <= '04/30/2020')
-    ]
+csv_usa_april = csv_usa.loc[
+    (csv_usa['ObservationDate'] >= '04/01/2020') & (csv_usa['ObservationDate'] <= '04/30/2020')
+]
 
-    russia_population = 146748590
-    usa_population = 329210630
+russia_population = 146748590
+usa_population = 329210630
 
-    def summarize_data_by_date(dataframe):
-        summarized_dict = {
-            'ObservationDate': [],
-            'Confirmed': [],
-            'Deaths': [],
-            'Recovered': [],
-        }
 
-        country_name = dataframe.iloc[0]['Country/Region']
+def summarize_data_by_date(dataframe):
+    summarized_dict = {
+        'ObservationDate': [],
+        'Confirmed': [],
+        'Deaths': [],
+        'Recovered': [],
+    }
 
-        population = russia_population if country_name == "Russia" else usa_population
+    country_name = dataframe.iloc[0]['Country/Region']
 
-        for index, row in dataframe.iterrows():
-            # datetime -> day number
-            date = datetime.datetime.strptime(row['ObservationDate'], '%m/%d/%Y').day
+    population = russia_population if country_name == "Russia" else usa_population
 
-            try:
-                recovered_index = summarized_dict['ObservationDate'].index(date)
-            except ValueError:
-                summarized_dict['ObservationDate'].append(date)
+    for index, row in dataframe.iterrows():
+        # datetime -> day number
+        date = datetime.datetime.strptime(row['ObservationDate'], '%m/%d/%Y').day
 
-                for key in ['Confirmed', 'Deaths', 'Recovered']:
-                    summarized_dict[key].append(0)
-
-                recovered_index = len(summarized_dict['ObservationDate']) - 1
+        try:
+            recovered_index = summarized_dict['ObservationDate'].index(date)
+        except ValueError:
+            summarized_dict['ObservationDate'].append(date)
 
             for key in ['Confirmed', 'Deaths', 'Recovered']:
-                summarized_dict[key][recovered_index] += int(row[key])
+                summarized_dict[key].append(0)
 
-        summarized_dict['Country/Region'] = [country_name] * len(summarized_dict['ObservationDate'])
+            recovered_index = len(summarized_dict['ObservationDate']) - 1
 
-        df = pandas.DataFrame(summarized_dict)
+        for key in ['Confirmed', 'Deaths', 'Recovered']:
+            summarized_dict[key][recovered_index] += int(row[key])
 
-        df["Recovered/Confirmed %"] = df.apply(lambda row: (row["Recovered"]/row["Confirmed"]) * 100, axis=1)
-        df["Deaths/Confirmed %"] = df.apply(lambda row: (row["Deaths"] / row["Confirmed"]) * 100, axis=1)
+    summarized_dict['Country/Region'] = [country_name] * len(summarized_dict['ObservationDate'])
 
-        df.loc[0, 'dynamic(Recovered/Confirmed %)/population'] = (df.loc[0, 'Recovered'] / df.loc[0, 'Confirmed']) * 100 / population
-        df.loc[0, 'dynamic(Deaths/Confirmed %)/population'] = (df.loc[0, 'Deaths'] / df.loc[
-            0, 'Confirmed']) * 100 / population
+    df = pandas.DataFrame(summarized_dict)
 
-        for i in range(1, len(df)):
-            df.loc[i, 'dynamic(Recovered/Confirmed %)/population'] = (df.loc[i, 'Recovered'] / df.loc[i, 'Confirmed']) * 100 / population - df.loc[i - 1, 'dynamic(Recovered/Confirmed %)/population']
-            df.loc[i, 'dynamic(Deaths/Confirmed %)/population'] = (df.loc[i, 'Deaths'] / df.loc[
-                i, 'Confirmed']) * 100 / population - df.loc[i - 1, 'dynamic(Deaths/Confirmed %)/population']
+    df["Recovered/Confirmed %"] = df.apply(lambda row: (row["Recovered"]/row["Confirmed"]) * 100, axis=1)
+    df["Deaths/Confirmed %"] = df.apply(lambda row: (row["Deaths"] / row["Confirmed"]) * 100, axis=1)
 
-        return df
+    df.loc[0, 'dynamic(Recovered/Confirmed %)/population'] = (df.loc[0, 'Recovered'] / df.loc[0, 'Confirmed']) * 100 / population
+    df.loc[0, 'dynamic(Deaths/Confirmed %)/population'] = (df.loc[0, 'Deaths'] / df.loc[
+        0, 'Confirmed']) * 100 / population
 
-    def get_ticks_by_series(series_1, series_2, tick_step=1):
-        tick_1_min = series_1.min()
-        tick_2_min = series_2.min()
-        tick_min = min([tick_1_min, tick_2_min])
+    for i in range(1, len(df)):
+        df.loc[i, 'dynamic(Recovered/Confirmed %)/population'] = (df.loc[i, 'Recovered'] / df.loc[i, 'Confirmed']) * 100 / population - df.loc[i - 1, 'dynamic(Recovered/Confirmed %)/population']
+        df.loc[i, 'dynamic(Deaths/Confirmed %)/population'] = (df.loc[i, 'Deaths'] / df.loc[
+            i, 'Confirmed']) * 100 / population - df.loc[i - 1, 'dynamic(Deaths/Confirmed %)/population']
 
-        tick_1_max = series_1.max()
-        tick_2_max = series_2.max()
-        tick_max = max([tick_1_max, tick_2_max])
+    return df
 
-        tick_first = max([tick_step, math.floor(tick_min / tick_step) * tick_step])
-        tick_last = math.ceil(tick_max / tick_step) * tick_step
-        ticks = sorted(
-            [tick_min] +
-            list(range(tick_first, tick_last, tick_step))
-        )
 
-        if tick_max not in ticks:
-            ticks.append(tick_max)
+def get_ticks_by_series(series_1, series_2, tick_step=1):
+    tick_1_min = series_1.min()
+    tick_2_min = series_2.min()
+    tick_min = min([tick_1_min, tick_2_min])
 
-        return ticks
+    tick_1_max = series_1.max()
+    tick_2_max = series_2.max()
+    tick_max = max([tick_1_max, tick_2_max])
 
-    csv_russia_april_summarized = summarize_data_by_date(csv_russia_april)
-    csv_usa_april_summarized = summarize_data_by_date(csv_usa_april)
+    tick_first = max([tick_step, math.floor(tick_min / tick_step) * tick_step])
+    tick_last = math.ceil(tick_max / tick_step) * tick_step
+    ticks = sorted(
+        [tick_min] +
+        list(range(tick_first, tick_last, tick_step))
+    )
 
+    if tick_max not in ticks:
+        ticks.append(tick_max)
+
+    return ticks
+
+csv_russia_april_summarized = summarize_data_by_date(csv_russia_april)
+csv_usa_april_summarized = summarize_data_by_date(csv_usa_april)
+
+if __name__ == "__main__":
     x_ticks = get_ticks_by_series(csv_russia_april_summarized['ObservationDate'], csv_usa_april_summarized['ObservationDate'], 3)
 
     # 5.1
@@ -164,9 +166,5 @@ def block_5():
     plt.title('Динамика смертей от коронавируса в зависимости от населения')
 
     plt.show()
-
-
-if __name__ == "__main__":
-    block_5()
 
 # </блок Тюменева Владислава Дмитриевича>
